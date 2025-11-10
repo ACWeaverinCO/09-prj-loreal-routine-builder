@@ -160,9 +160,111 @@ productsContainer.addEventListener("click", (e) => {
   toggleSelect(id);
 });
 
-/* Chat form submission handler - placeholder for OpenAI integration */
-chatForm.addEventListener("submit", (e) => {
+/* Chat form submission handler - sends request to Cloudflare Worker */
+chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  chatWindow.innerHTML = "Connect to the OpenAI API for a response!";
+  /* Get the user's message from the input field */
+  const userInput = document.getElementById("userInput");
+  const userMessage = userInput.value.trim();
+
+  if (!userMessage) return;
+
+  /* Display user's message in chat window */
+  chatWindow.innerHTML += `<div class="message user-message">${escapeHtml(
+    userMessage
+  )}</div>`;
+
+  /* Clear input field */
+  userInput.value = "";
+
+  /* Show loading indicator */
+  chatWindow.innerHTML += `<div class="message bot-message loading">Thinking...</div>`;
+
+  try {
+    /* Send POST request to your Cloudflare Worker */
+    const response = await fetch(
+      "https://floral-unit-4d9b.ashley-weaver.workers.dev/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage,
+        }),
+      }
+    );
+
+    /* Parse the response from the worker */
+    const data = await response.json();
+
+    /* Remove loading indicator */
+    const loadingMsg = chatWindow.querySelector(".loading");
+    if (loadingMsg) loadingMsg.remove();
+
+    /* Display the AI response */
+    const reply = data.reply || "Sorry, I couldn't get a response.";
+    chatWindow.innerHTML += `<div class="message bot-message">${escapeHtml(
+      reply
+    )}</div>`;
+
+    /* Scroll to bottom of chat */
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  } catch (error) {
+    /* Remove loading indicator */
+    const loadingMsg = chatWindow.querySelector(".loading");
+    if (loadingMsg) loadingMsg.remove();
+
+    /* Display error message */
+    chatWindow.innerHTML += `<div class="message bot-message error">Error connecting to the server. Please try again.</div>`;
+    console.error("Error:", error);
+  }
+});
+
+/* Generate Routine button handler */
+const generateButton = document.getElementById("generateRoutine");
+
+generateButton.addEventListener("click", async () => {
+  /* Gather selected products */
+  const selectedProducts = Array.from(selectedIds)
+    .map((id) => {
+      return window.allProducts.find((p) => p.id === id);
+    })
+    .filter(Boolean);
+
+  if (selectedProducts.length === 0) {
+    alert("Please select some products first!");
+    return;
+  }
+
+  /* Show a message in chat for feedback */
+  chatWindow.innerHTML += `<div class="message bot-message">Generating your personalized routine...</div>`;
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+
+  try {
+    /* Send selected products to your Worker */
+    const response = await fetch(
+      "https://floral-unit-4d9b.ashley-weaver.workers.dev/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ products: selectedProducts }),
+      }
+    );
+
+    const data = await response.json();
+
+    /* Display the generated routine */
+    const routine = data.routine || "Sorry, I couldn't generate a routine.";
+    chatWindow.innerHTML += `<div class="message bot-message">${escapeHtml(
+      routine
+    )}</div>`;
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  } catch (err) {
+    chatWindow.innerHTML += `<div class="message bot-message error">Error generating routine. Please try again.</div>`;
+    console.error(err);
+  }
 });
