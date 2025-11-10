@@ -71,6 +71,8 @@ body {
 .search-section {
   margin: 26px 0;
   display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .search-section select {
@@ -91,6 +93,68 @@ body {
   outline: none;
   box-shadow: 0 6px 18px rgba(255, 0, 59, 0.08);
   transform: translateY(-1px);
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--muted);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+#productSearch {
+  width: 100%;
+  padding: 14px 48px 14px 46px;
+  font-size: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  background-color: var(--card-bg);
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+  color: #222;
+  transition: box-shadow 0.18s, transform 0.12s;
+  box-shadow: var(--shadow-1);
+}
+
+#productSearch:focus {
+  outline: none;
+  box-shadow: 0 6px 18px rgba(255, 0, 59, 0.08);
+  transform: translateY(-1px);
+}
+
+#productSearch::placeholder {
+  color: var(--muted);
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.06);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--muted);
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.clear-search-btn:hover {
+  background: rgba(255, 0, 59, 0.1);
+  color: var(--brand-red);
+}
+
+.clear-search-btn i {
+  font-size: 12px;
 }
 
 /* chat & panels layout */
@@ -236,11 +300,22 @@ body {
   box-shadow: var(--shadow-1);
   border: 1px solid rgba(16, 24, 40, 0.04);
   transition: transform 0.16s ease, box-shadow 0.16s ease;
+  cursor: pointer;
+  /* Better touch targets for mobile */
+  -webkit-tap-highlight-color: rgba(227, 165, 53, 0.1);
 }
 
 .product-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 18px 40px rgba(16, 24, 40, 0.08);
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .product-card:hover {
+    transform: none;
+    box-shadow: var(--shadow-1);
+  }
 }
 
 /* selected state */
@@ -249,6 +324,13 @@ body {
   border-color: rgba(227, 165, 53, 0.16);
   box-shadow: 0 20px 50px rgba(227, 165, 53, 0.08);
   transform: translateY(-8px) scale(1.01);
+}
+
+/* Simpler selected state on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .product-card.selected {
+    transform: scale(1.01);
+  }
 }
 
 .product-card img {
@@ -365,6 +447,33 @@ body {
   border-radius: 6px;
 }
 
+.clear-all-btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: #dc3545;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s ease, transform 0.12s ease;
+}
+
+.clear-all-btn:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+}
+
+.clear-all-btn:active {
+  transform: translateY(0);
+}
+
+.clear-all-btn i {
+  margin-right: 6px;
+}
+
 .generate-btn {
   width: 100%;
   margin-top: 16px;
@@ -394,21 +503,499 @@ body {
   margin-right: 8px;
 }
 
-/* responsive tweaks */
-@media (max-width: 840px) {
+/* ===============================================
+   RTL (Right-to-Left) Support
+   =============================================== */
+
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+/* RTL: Logo and Header */
+[dir="rtl"] .site-header {
+  text-align: center;
+}
+
+/* RTL: Product Grid */
+[dir="rtl"] .products-grid {
+  direction: rtl;
+}
+
+[dir="rtl"] .product-card {
+  text-align: right;
+}
+
+/* RTL: Product Controls and Details Button */
+[dir="rtl"] .product-controls {
+  text-align: right;
+}
+
+/* RTL: Selected Products Chips */
+[dir="rtl"] .selected-chip {
+  direction: rtl;
+}
+
+[dir="rtl"] .remove-chip {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+/* RTL: Search Section */
+[dir="rtl"] .search-icon {
+  left: auto;
+  right: 16px;
+}
+
+[dir="rtl"] #productSearch {
+  padding: 14px 46px 14px 48px;
+  text-align: right;
+}
+
+[dir="rtl"] .clear-search-btn {
+  right: auto;
+  left: 12px;
+}
+
+/* RTL: Chat Window */
+[dir="rtl"] .chat-window {
+  direction: rtl;
+}
+
+[dir="rtl"] .message {
+  text-align: right;
+}
+
+[dir="rtl"] .user-message {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .bot-message {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* RTL: Chat Form */
+[dir="rtl"] .chat-form {
+  direction: rtl;
+}
+
+[dir="rtl"] .chat-form input {
+  text-align: right;
+  padding-right: 16px;
+  padding-left: 52px;
+}
+
+[dir="rtl"] .chat-form button {
+  right: auto;
+  left: 8px;
+}
+
+/* RTL: Icons with margins */
+[dir="rtl"] .generate-btn i,
+[dir="rtl"] .clear-all-btn i {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+[dir="rtl"] #sendBtn i {
+  transform: scaleX(-1);
+}
+
+/* RTL: Footer */
+[dir="rtl"] .site-footer {
+  direction: rtl;
+}
+
+[dir="rtl"] .site-footer nav a {
+  margin: 0 0 0 20px;
+}
+
+[dir="rtl"] .site-footer nav a:last-child {
+  margin-left: 0;
+}
+
+/* ===============================================
+   Responsive Design - Mobile & Tablet
+   =============================================== */
+
+/* Tablet & Medium Screens (768px - 1024px) */
+@media (max-width: 1024px) {
+  .page-wrapper {
+    width: 98%;
+    padding: 24px;
+  }
+
+  .site-title {
+    font-size: 18px;
+  }
+
+  .products-grid {
+    gap: 16px;
+  }
+
   .product-card {
-    flex: 0 1 calc(50% - 14px);
+    flex: 0 1 calc(50% - 8px);
+  }
+
+  .chatbox {
+    padding: 18px;
+  }
+
+  .chat-window {
+    max-height: 350px;
   }
 }
 
-@media (max-width: 520px) {
-  .product-card {
-    flex: 0 1 100%;
+/* Tablet Portrait (max-width: 840px) */
+@media (max-width: 840px) {
+  body {
+    padding: 20px 10px;
   }
+
+  .page-wrapper {
+    padding: 20px;
+  }
+
+  .logo {
+    width: 200px;
+  }
+
+  .site-title {
+    font-size: 17px;
+  }
+
+  .search-section {
+    gap: 12px;
+  }
+
+  .search-section select,
+  #productSearch {
+    font-size: 15px;
+    padding: 12px 14px;
+  }
+
+  #productSearch {
+    padding-left: 42px;
+    padding-right: 44px;
+  }
+
+  .product-card {
+    flex: 0 1 calc(50% - 10px);
+  }
+
+  .product-card h3 {
+    font-size: 15px;
+  }
+
+  .product-card p {
+    font-size: 13px;
+  }
+
+  .selected-products {
+    padding: 18px;
+  }
+
+  .selected-products h2 {
+    font-size: 17px;
+  }
+
+  .chatbox {
+    padding: 16px;
+    margin: 28px 0;
+  }
+
+  .chatbox h2 {
+    font-size: 17px;
+  }
+
+  .chat-window {
+    max-height: 320px;
+    padding: 14px;
+  }
+
+  .message {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .chat-form input {
+    font-size: 15px;
+    padding: 12px 14px 12px 14px;
+  }
+
+  .generate-btn,
+  .clear-all-btn {
+    font-size: 15px;
+    padding: 12px;
+  }
+}
+
+/* Mobile Landscape & Small Tablets (max-width: 640px) */
+@media (max-width: 640px) {
+  .page-wrapper {
+    padding: 16px;
+  }
+
   .logo {
     width: 180px;
   }
+
+  .site-title {
+    font-size: 16px;
+  }
+
+  .search-section {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .products-grid {
+    gap: 12px;
+  }
+
+  .product-card {
+    flex: 0 1 100%;
+  }
+
+  .selected-chip {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  .chatbox {
+    margin: 24px 0;
+  }
+
+  .chat-window {
+    max-height: 280px;
+  }
+
+  .site-footer {
+    font-size: 13px;
+    padding: 16px 0;
+  }
+
+  .site-footer nav {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .site-footer nav a {
+    margin: 0;
+  }
+}
+
+/* Mobile Portrait (max-width: 480px) */
+@media (max-width: 480px) {
+  body {
+    padding: 12px 8px;
+  }
+
   .page-wrapper {
-    padding: 18px;
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .site-header {
+    padding: 12px 8px 8px;
+  }
+
+  .logo {
+    width: 160px;
+    margin: 4px auto 8px;
+  }
+
+  .site-title {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .search-section {
+    margin: 18px 0;
+  }
+
+  .search-section select,
+  #productSearch {
+    font-size: 14px;
+    padding: 11px 12px;
+  }
+
+  #productSearch {
+    padding-left: 38px;
+    padding-right: 40px;
+  }
+
+  .search-icon {
+    left: 12px;
+    font-size: 14px;
+  }
+
+  [dir="rtl"] .search-icon {
+    right: 12px;
+  }
+
+  .clear-search-btn {
+    right: 10px;
+    width: 24px;
+    height: 24px;
+  }
+
+  [dir="rtl"] .clear-search-btn {
+    left: 10px;
+  }
+
+  .products-grid {
+    gap: 10px;
+  }
+
+  .product-card {
+    padding: 12px;
+  }
+
+  .product-card h3 {
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+
+  .product-card p {
+    font-size: 12px;
+  }
+
+  .details-btn {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .product-desc {
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  .selected-products {
+    padding: 14px;
+    margin: 20px 0;
+  }
+
+  .selected-products h2 {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .selected-chip {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+
+  .remove-chip {
+    font-size: 16px;
+  }
+
+  .generate-btn,
+  .clear-all-btn {
+    font-size: 14px;
+    padding: 11px;
+    margin-top: 12px;
+  }
+
+  .chatbox {
+    padding: 14px;
+    margin: 20px 0;
+  }
+
+  .chatbox h2 {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .chat-window {
+    max-height: 250px;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .message {
+    font-size: 13px;
+    padding: 8px 11px;
+    max-width: 85%;
+  }
+
+  .chat-form {
+    margin-top: 10px;
+  }
+
+  .chat-form input {
+    font-size: 14px;
+    padding: 10px 12px 10px 12px;
+    padding-right: 46px;
+  }
+
+  [dir="rtl"] .chat-form input {
+    padding-left: 46px;
+    padding-right: 12px;
+  }
+
+  .chat-form button {
+    width: 38px;
+    height: 38px;
+    right: 6px;
+  }
+
+  [dir="rtl"] .chat-form button {
+    left: 6px;
+  }
+
+  .chat-form button i {
+    font-size: 16px;
+  }
+
+  .site-footer {
+    font-size: 12px;
+    padding: 14px 0;
+  }
+
+  .site-footer p {
+    margin-bottom: 8px;
+  }
+}
+
+/* Small Mobile (max-width: 360px) */
+@media (max-width: 360px) {
+  .page-wrapper {
+    padding: 12px;
+  }
+
+  .logo {
+    width: 140px;
+  }
+
+  .site-title {
+    font-size: 14px;
+  }
+
+  .search-section select,
+  #productSearch {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .product-card h3 {
+    font-size: 13px;
+  }
+
+  .selected-products h2,
+  .chatbox h2 {
+    font-size: 14px;
+  }
+
+  .chat-window {
+    max-height: 220px;
+  }
+
+  .message {
+    font-size: 12px;
+    padding: 7px 10px;
   }
 }
